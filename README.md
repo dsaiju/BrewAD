@@ -1,2 +1,3 @@
 # BrewAD
-Active Directory Brewmaster Template
+
+Brewmaster template to install Active Directory in a VM
