@@ -102,10 +102,6 @@
       {
         "Name": "ad-dns1",
         "IPAddress": "10.0.0.4"
-      },
-      {
-        "Name": "ad-dns2",
-        "IPAddress": "10.0.0.5"
       }
     ],
     "LocalSites": [],
@@ -123,8 +119,7 @@
           }
         ],
         "DnsServers": [
-          "ad-dns1",
-          "ad-dns2"
+          "ad-dns1"
         ],
         "VPNClientAddressSpaces": []
       }
@@ -180,35 +175,6 @@
               "RootDomainController"
             ],
             "DeploymentGroup": "Forest"
-          },
-          {
-            "Name": "{{ServerNamePrefix}}2",
-            "RoleSize": "{{VMSize}}",
-            "Subnets": [
-              "ad-subnet"
-            ],
-            "AvailabilitySet": "{{AVSet}}",
-            "OsVirtualDisk": {
-              "OsType": "Windows",
-              "OsImageName": "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-*"
-            },
-            "DataVirtualDisks": [
-              {
-                "DiskId": "disk0",
-                "Lun": 0,
-                "LogicalSizeInGB": 40
-              }
-            ],
-            "WindowsConfigSet": {
-              "LocalAdminCredentialId": "DomainAdmin",
-              "EnableAutomaticUpdates": false,
-              "ChangePasswordAtLogon": false,
-              "DisableRdp": false
-            },
-            "ConfigSets": [
-              "DomainController"
-            ],
-			"DeploymentGroup": "AD"
           }
         ],
         "DnsServers": [
@@ -225,10 +191,6 @@
 	{
       "Name": "Forest",
       "Description": "Must fully deploy forest root before any other DCs"
-    },
-    {
-      "Name": "AD",
-      "Description": "Additional DCs"
     }
   ],
   "Credentials": [
@@ -256,15 +218,6 @@
       "ConfigurationIds": [
         "SetupADNode",
         "SetupADForest"
-      ]
-    },
-    {
-      "Name": "DomainController",
-      "Description": "Active Directory child DC",
-      "Endpoints": [],
-      "ConfigurationIds": [
-        "SetupADNode",
-        "SetupADDomainController"
       ]
     }
   ],
@@ -360,53 +313,6 @@
           "Nodes": [],
           "Requires": [
             "[Script]SetupForest"
-          ],
-          "Description": null
-        }
-      ],
-      "Args": {}
-    },
-    {
-      "Name": "SetupADDomainController",
-      "Description": "Configure this server as an additional Active Directory domain controller. See http://technet.microsoft.com/en-us/library/jj574134.aspx.",
-      "Resources": [
-        {
-          "Credential": null,
-          "GetScript": "return @{Domain = Get-WmiObject Win32_NTDomain}",
-          "SetScript": "\r\nWrite-Verbose \"Creating domain [$DomainNetbiosName ($DomainName)]\"\r\nImport-Module ADDSDeployment -Verbose:$false\r\n\r\n# Temporarily make the RootDC our DNS Server...\r\n Set-DnsClientServerAddress -InterfaceAlias 'Ethernet*' -ServerAddresses $DCRootIPAddress -Validate -ErrorAction Stop\r\n\r\nInstall-ADDSDomainController -DomainName $DomainName `\r\n                             -Credential (New-Object PsCredential($AdminUser, (ConvertTo-SecureString $AdminPass -AsPlainText -Force))) `\r\n                             -SafeModeAdministratorPassword (ConvertTo-SecureString $DSRMPassPhrase -AsPlainText -Force) `\r\n                             -InstallDns `\r\n                             -NoGlobalCatalog `\r\n                             -DatabasePath $DatabasePath `\r\n                             -LogPath $LogPath `\r\n                             -SysvolPath $SysvolPath `\r\n                             -Force `\r\n                             -NoRebootOnCompletion `\r\n                             -ErrorAction Stop `\r\n                             -WarningAction SilentlyContinue\r\n\r\n# Point the DNS server at this server...\r\n Set-DnsClientServerAddress -InterfaceAlias 'Ethernet*' -ServerAddresses '127.0.0.1' -Validate:$false\r\n\r\nWrite-Verbose 'Rebooting'\r\n$global:DSCMachineStatus = 1",
-          "TestScript": "\r\n$d = Get-WmiObject Win32_NTDomain\r\nif ($d.Status -eq 'OK' -AND \r\n    $d.DnsForestName -eq $DomainName -AND \r\n    $d.DomainName -eq $DomainNetbiosName -AND \r\n    $d.DomainControllerName -eq \"\\\\$env:COMPUTERNAME\")\r\n{\r\n\tWrite-Verbose \"Domain [$DomainNetbiosName ($DomainName)] already configured.\"\r\n\treturn $true\r\n}\r\nreturn $false",
-          "Type": "Script",
-          "ImportModule": null,
-          "ImportTypeName": null,
-          "Name": "SetupDC",
-          "Args": {
-            "DomainNetbiosName": "{{Domain}}",
-            "DomainName": "{{FQDN}}",
-            "DSRMPassPhrase": "{{DSRMPassPhrase}}",
-            "AdminUser": "{{Domain}}\\{{AdminName}}",
-            "AdminPass": "{{AdminPassword}}",
-            "DatabasePath": "F:\\NTDS",
-            "LogPath": "F:\\NTDS",
-            "SysvolPath": "F:\\SYSVOL",
-            "DCRootIPAddress": "10.0.0.4"
-          },
-          "Nodes": [],
-          "Requires": [],
-          "Description": ""
-        },
-        {
-          "Type": "Service",
-          "ImportModule": null,
-          "ImportTypeName": null,
-          "Name": "StartADWebServices",
-          "Args": {
-            "Name": "ADWS",
-            "StartupType": "Automatic",
-            "State": "Running"
-          },
-          "Nodes": [],
-          "Requires": [
-            "[Script]SetupDC"
           ],
           "Description": null
         }
