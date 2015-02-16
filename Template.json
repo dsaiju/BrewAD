@@ -90,7 +90,7 @@
       "AllowedRegex": "^[a-zA-Z][a-zA-Z0-9-]{1,13}$",
       "AllowedDescription": "Must contain 3 to 14 letters, numbers, and hyphens. Must start with a letter."
     },
-  {
+    {
       "Name": "AVSet",
       "Type": "String",
       "Default": "ad-avset",
@@ -192,7 +192,7 @@
   {
       "Name": "Forest",
       "Description": "Must fully deploy forest root before any other DCs"
-    }
+  }
   ],
   "Credentials": [
     {
@@ -218,7 +218,7 @@
       "Endpoints": [],
       "ConfigurationIds": [
         "SetupADNode",
-        "SetupADForest"
+        "SetupADForest",
         "SetupADCS"
       ]
     }
@@ -277,7 +277,6 @@
       ],
       "Args": {}
     },
-    
     {
       "Name": "SetupADForest",
       "Description": "Configure this server as the first Active Directory domain controller in a new forest. See http://technet.microsoft.com/en-us/library/jj574166.aspx",
@@ -322,7 +321,6 @@
       ],
       "Args": {}
     },
-
     {
       "Name": "SetupADCS",
       "Description": "Configure this server as the first Active Directory certificate services. See https://technet.microsoft.com/en-in/windowsserver/dd448615.aspx",
