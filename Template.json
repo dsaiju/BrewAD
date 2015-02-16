@@ -354,7 +354,18 @@
           "Nodes": [],
           "Requires": [],
           "Description": null
+        },
+        {
+          "Type": "xAdcsCertificationAuthority",
+          "ImportModule": " xAdcsDeployment",
+          "ImportTypeName": "MSFT_xAdcsCertificationAuthority",
+          "Name": "InitialADCSCert",
+          "Args": {
+            "Credential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)",
+            "CAType" : "EnterpriseRootCA",
+            "Ensure": "Present"
         }
+      }
       ],
       "Args": {}
     }
