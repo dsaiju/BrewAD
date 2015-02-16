@@ -90,7 +90,7 @@
       "AllowedRegex": "^[a-zA-Z][a-zA-Z0-9-]{1,13}$",
       "AllowedDescription": "Must contain 3 to 14 letters, numbers, and hyphens. Must start with a letter."
     },
-	{
+  {
       "Name": "AVSet",
       "Type": "String",
       "Default": "ad-avset",
@@ -150,6 +150,7 @@
           {
             "Name": "{{ServerNamePrefix}}1",
             "RoleSize": "{{VMSize}}",
+            "StaticVNetIPAddress": "10.0.0.4",
             "Subnets": [
               "ad-subnet"
             ],
@@ -188,7 +189,7 @@
     }
   ],
   "DeploymentGroups": [
-	{
+  {
       "Name": "Forest",
       "Description": "Must fully deploy forest root before any other DCs"
     }
@@ -218,6 +219,7 @@
       "ConfigurationIds": [
         "SetupADNode",
         "SetupADForest"
+        "SetupADCS"
       ]
     }
   ],
@@ -275,6 +277,7 @@
       ],
       "Args": {}
     },
+    
     {
       "Name": "SetupADForest",
       "Description": "Configure this server as the first Active Directory domain controller in a new forest. See http://technet.microsoft.com/en-us/library/jj574166.aspx",
@@ -314,6 +317,44 @@
           "Requires": [
             "[Script]SetupForest"
           ],
+          "Description": null
+        }
+      ],
+      "Args": {}
+    },
+
+    {
+      "Name": "SetupADCS",
+      "Description": "Configure this server as the first Active Directory certificate services. See https://technet.microsoft.com/en-in/windowsserver/dd448615.aspx",
+      "Resources": [        
+        {
+          "Type": "WindowsFeature",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "ADCSCertAuthority",
+          "Args": {
+            "Name": "ADCS-Cert-Authority",
+            "Ensure": "Present",
+            "IncludeAllSubFeature": "true",
+            "LogPath": "%BrewmasterDir%\\Logs\\Install-ADCSCertAuthority.log"
+          },
+          "Nodes": [],
+          "Requires": [],
+          "Description": null
+        },
+        {
+          "Type": "WindowsFeature",
+          "ImportModule": null,
+          "ImportTypeName": null,
+          "Name": "ADCSOnlineCert",
+          "Args": {
+            "Name": "ADCS-Online-Cert",
+            "Ensure": "Present",
+            "IncludeAllSubFeature": "true",
+            "LogPath": "%BrewmasterDir%\\Logs\\Install-ADCSOnlineCert.log"
+          },
+          "Nodes": [],
+          "Requires": [],
           "Description": null
         }
       ],
