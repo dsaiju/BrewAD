@@ -357,7 +357,7 @@
         },
         {
           "Type": "xAdcsCertificationAuthority",
-          "ImportModule": " xAdcsDeployment",
+          "ImportModule": "xCertificateServices",
           "ImportTypeName": "MSFT_xAdcsCertificationAuthority",
           "Name": "InitialADCSCert",
           "Args": 
