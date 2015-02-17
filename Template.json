@@ -366,9 +366,7 @@
             "CAType" : "EnterpriseRootCA",
             "Ensure": "Present"
           },
-          "Nodes": [
-            "{{CloudService}}{{ServerNamePrefix}}1"
-          ],
+          "Nodes": [],
           "Requires": ["[WindowsFeature]ADCSCertAuthority","[WindowsFeature]ADCSOnlineCert"],
           "Description": null
         }
