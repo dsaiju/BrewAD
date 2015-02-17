@@ -360,12 +360,16 @@
           "ImportModule": " xAdcsDeployment",
           "ImportTypeName": "MSFT_xAdcsCertificationAuthority",
           "Name": "InitialADCSCert",
-          "Args": {
+          "Args": 
+          {
             "Credential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)",
             "CAType" : "EnterpriseRootCA",
             "Ensure": "Present"
+          },
+          "Nodes": [],
+          "Requires": [[WindowsFeature]ADCSCertAuthority,[WindowsFeature]ADCSOnlineCert],
+          "Description": null
         }
-      }
       ],
       "Args": {}
     }
