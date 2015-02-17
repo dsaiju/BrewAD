@@ -369,7 +369,7 @@
           "Nodes": [
             "{{CloudService}}{{ServerNamePrefix}}1"
           ],
-          "Requires": [[WindowsFeature]ADCSCertAuthority,[WindowsFeature]ADCSOnlineCert],
+          "Requires": ["[WindowsFeature]ADCSCertAuthority","[WindowsFeature]ADCSOnlineCert"],
           "Description": null
         }
       ],
