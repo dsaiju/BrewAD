@@ -369,22 +369,6 @@
           "Nodes": [],
           "Requires": ["[WindowsFeature]ADCSCertAuthority"],
           "Description": null
-        },
-        {
-          "Credential": "%%New-Object PSCredential '{{Domain}}\\{{AdminName}}', (ConvertTo-SecureString '{{AdminPassword}}' -AsPlainText -Force)",
-          "GetScript": "",
-          "SetScript": "Install-AdcsOnlineResponder -force",
-          "TestScript": null,
-          "Type": "Script",
-          "ImportModule": null,
-          "ImportTypeName": null,
-          "Name": "InitialAdcsOnlineResponder",
-          "Args": {
-            "FirstDriveLetter": "F"
-          },
-          "Nodes": [],
-          "Requires": ["[WindowsFeature]ADCSOnlineCert"],
-          "Description": null
         }
       ],
       "Args": {}
